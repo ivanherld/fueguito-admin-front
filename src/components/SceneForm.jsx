@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { scenesService } from '../services/api'
 
-const uploadWithProgress = (file, url, onProgress) =>
-  new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100))
-    })
-    xhr.addEventListener('load', () => {
-      if (xhr.status >= 200 && xhr.status < 300) resolve()
-      else reject(new Error(`Error al subir: ${xhr.status}`))
-    })
-    xhr.addEventListener('error', () => reject(new Error('Error de red al subir el archivo')))
-    xhr.open('PUT', url)
-    xhr.setRequestHeader('Content-Type', file.type)
-    xhr.send(file)
+const uploadWithProgress = async (file, url, onProgress) => {
+  onProgress(0)
+  const response = await fetch(url, {
+    method: 'PUT',
+    body: file,
+    headers: { 'Content-Type': file.type },
   })
+  if (!response.ok) throw new Error(`Error al subir: ${response.status}`)
+  onProgress(100)
+}
 
 export default function SceneForm({
   scene = null,
