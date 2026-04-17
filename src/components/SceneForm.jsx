@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { scenesService } from '../services/api'
 
 const uploadWithProgress = async (file, url, onProgress) => {
+  console.log('[upload] método: PUT')
+  console.log('[upload] url:', url)
+  console.log('[upload] content-type:', file.type)
   onProgress(0)
   const response = await fetch(url, {
     method: 'PUT',
     body: file,
     headers: { 'Content-Type': file.type },
   })
+  console.log('[upload] status:', response.status)
   if (!response.ok) throw new Error(`Error al subir: ${response.status}`)
   onProgress(100)
 }
